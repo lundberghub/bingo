@@ -79,6 +79,8 @@ def create_bingo_card_section(stylesheet, title, matrices):
         #if( matrix[3])
         data = [[BingoCardCell(matrix[y][x].title, cell_style) for x in range(size)] for y in range(size)]
         # data = [[Paragraph(matrix[y][x].title, cell_style) for x in range(size)] for y in range(size)]
+        # put the logo in the middle!
+        data[2][2] = im
         table = Table(data, size*[0.8*inch], size*[0.8*inch], table_style, 0, 1, None, None, None, None, 1, None)
 
         flowables.append(KeepTogether([
