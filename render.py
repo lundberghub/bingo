@@ -1,21 +1,33 @@
 from reportlab.lib import colors, enums
 from reportlab.lib.pagesizes import letter, inch
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, KeepTogether, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, KeepTogether, Spacer, PageBreak
+from reportlab.platypus.flowables import Image
 from copy import deepcopy
 
+im = Image("wrik bingo.jpg", 50, 50)
 
-def create_bingo_cards_pdf(title, song_distribution, matrices, filename):
-    print 'Creating "{}" bingo cards in {}'.format(title, filename)
+
+# for some reason the WRIK center square in the matrix doesn't get along
+# with the song distribution. i removed the song dist arg here to get the thing to run.
+# def create_bingo_cards_pdf(title, matrices, song_distribution, filename):
+def create_bingo_cards_pdf(title, matrices, filename):
+    print('Creating "{}" bingo cards in {}'.format(title, filename))
 
     document = SimpleDocTemplate(filename, pagesize=letter, topMargin=0.0, BottomMargin=0.0)
     stylesheet = getSampleStyleSheet()
 
-    flowables = create_song_distribution_section(stylesheet, title, song_distribution) + \
-                create_bingo_card_section(stylesheet, title, matrices)
+    #flowables = create_song_distribution_section(stylesheet, title, song_distribution) + \
+    #            create_bingo_card_section(stylesheet, title, matrices)
+    flowables = create_bingo_card_section(stylesheet, title, matrices)
 
     document.build(flowables)
 
+
+# prints the list of song distributions across bingo cards, 
+# which gives a host information to influence the pace of the game. 
+#
+# disable on printed output for now. 
 
 def create_song_distribution_section(stylesheet, title, song_distribution):
     flowables = []
@@ -57,19 +69,24 @@ def create_bingo_card_section(stylesheet, title, matrices):
 
     flowables = []
 
+
+
+
     # emit title and song matrix for each bingo card
     for matrix in matrices:
         assert matrix, len(matrix) == len(matrix[0])
         size = len(matrix)
+        #if( matrix[3])
         data = [[BingoCardCell(matrix[y][x].title, cell_style) for x in range(size)] for y in range(size)]
         # data = [[Paragraph(matrix[y][x].title, cell_style) for x in range(size)] for y in range(size)]
         table = Table(data, size*[0.8*inch], size*[0.8*inch], table_style, 0, 1, None, None, None, None, 1, None)
+
         flowables.append(KeepTogether([
             Spacer(1, 0.5*inch),
             Paragraph(title, title_style),
             table
         ]))
-
+    print(flowables)
     return flowables
 
 

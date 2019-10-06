@@ -17,9 +17,7 @@
 
 """
 
-# testing 1 2 3
 
-# testing 4 5 6
 import fnmatch
 import os
 import re
@@ -57,7 +55,8 @@ class Playlist:
     def add_song(self, song):
         self._songs.append(song)
 
-        for s in self._songs:
+        #for s in self._songs:
+
     def print_songs(self):
             print(s)
 
@@ -88,7 +87,7 @@ def _get_playlist_title_from_filename(filename):
 def create_playlist(filename):
     with open(filename) as file:
         title = _get_playlist_title_from_filename(filename)
-        print 'Processing file:{} title:{}'.format(filename, title)
+        print('Processing file:{} title:{}'.format(filename, title))
         playlist = Playlist(title)
         playlist.parse(file)
         return playlist
@@ -119,10 +118,12 @@ def get_file_list_to_process(root, pattern):
 def create_random_songs_matrix(playlist, size=5):
     matrix = [[None for x in range(size)] for y in range(size)]
     songs = iter(random.sample(playlist.songs(), size * size))
-
     for row in range(size):
         for col in range(size):
             matrix[row][col] = next(songs)
+
+    # no graphics yet :(
+    matrix[2][2] = Song("","WRIK")
 
     return matrix
 
@@ -162,11 +163,13 @@ def main(docopt_args):
         # playlists [process_playlist_files(inpath, '*.m3u')]
         # write_playlists(playlists, dbpath)
         matrices = create_bingo_cards(playlist, numcards)
-        song_distribution = [pair for pair in get_playlist_songs_distribution(playlist, matrices)]
-        render.create_bingo_cards_pdf(playlist.title, song_distribution, matrices, pdffile)
+
+        #song_distribution = [pair for pair in get_playlist_songs_distribution(playlist, matrices)]
+        #render.create_bingo_cards_pdf(playlist.title, song_distribution, matrices, pdffile)
+        render.create_bingo_cards_pdf(playlist.title, matrices, pdffile)
 
     except Exception as e:
-        print "Error : ", e
+        print("Error : ", e)
         sys.exit(1)
 
 if __name__ == '__main__':
